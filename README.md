@@ -38,19 +38,18 @@ pip install -r requirements.txt
 
 ### 4. Train the Model
 
-Open `Employee_Attrition.ipynb` in Jupyter Notebook and run all cells. The notebook includes:
-- Data exploration and visualization
-- Model training and evaluation
-- **Section 8**: Exports `model.pkl` and `metrics.pkl` for the Flask app
-
+**Option A: Using Jupyter Notebook** (recommended for exploration)
 ```bash
 jupyter notebook Employee_Attrition.ipynb
 ```
+Run all cells. Section 8 exports the model for Flask.
 
-Or run via command line:
+**Option B: Using the export script** (quick setup)
 ```bash
-jupyter nbconvert --to notebook --execute Employee_Attrition.ipynb
+python export_model.py
 ```
+
+Both options generate `model.pkl`, `metrics.pkl`, and `static/confusion.png`.
 
 ### 5. Run the Application
 
@@ -68,8 +67,9 @@ Navigate to: **http://127.0.0.1:5000**
 Employee-Attrition/
 ├── app.py                 # Flask web application
 ├── Employee_Attrition.ipynb  # Model training & analysis notebook
-├── model.pkl              # Trained model (generated from notebook)
-├── metrics.pkl            # Model metrics (generated from notebook)
+├── export_model.py        # Quick model export script
+├── model.pkl              # Trained model (generated)
+├── metrics.pkl            # Model metrics (generated)
 ├── requirements.txt       # Python dependencies
 ├── WA_Fn-UseC_-HR-Employee-Attrition.csv  # Dataset
 ├── static/

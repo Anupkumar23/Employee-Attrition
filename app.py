@@ -21,7 +21,7 @@ FEATURE_OPTIONS = {
     'OverTime': ['No', 'Yes']
 }
 
-# All feature columns in order (must match training)
+# All feature columns in order
 FEATURE_COLUMNS = [
     'Age', 'BusinessTravel', 'DailyRate', 'Department', 'DistanceFromHome',
     'Education', 'EducationField', 'EnvironmentSatisfaction', 'Gender', 'HourlyRate',
