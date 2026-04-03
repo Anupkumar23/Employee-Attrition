@@ -3,94 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Result</title>
+    <title>Prediction Result | AttritionAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-brand">HR Analytics</div>
-        <div class="nav-links">
-            <a href="/">Predict</a>
-            <a href="/metrics">Model Stats</a>
-        </div>
-    </nav>
-
-    <main class="main-content">
-        {% if error %}
-        <div class="result-card error">
-            <div class="result-icon">⚠️</div>
-            <h1>Error</h1>
-            <p>{{ error }}</p>
-            <a href="/" class="btn-primary">Try Again</a>
-        </div>
-        {% else %}
-        <div class="result-card {{ 'danger' if result.prediction == 'LEAVE' else 'success' }}">
-            <div class="result-icon">
-                {% if result.prediction == 'LEAVE' %}🚪{% else %}✅{% endif %}
-            </div>
-            <h1>Prediction: {{ result.prediction }}</h1>
-            <p class="confidence">Confidence: {{ result.confidence }}%</p>
-            
-            <div class="probability-bar">
-                <div class="prob-section stay" style="width: {{ result.stay_prob }}%">
-                    <span>Stay {{ result.stay_prob }}%</span>
-                </div>
-                <div class="prob-section leave" style="width: {{ result.leave_prob }}%">
-                    <span>Leave {{ result.leave_prob }}%</span>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">◈</span>
+                    <span class="logo-text">AttritionAI</span>
                 </div>
             </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/">
+                        <span class="nav-icon">📊</span>
+                        <span>Predict</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/metrics">
+                        <span class="nav-icon">📈</span>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-            <div class="result-details">
-                <h3>Employee Summary</h3>
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <span class="label">Age</span>
-                        <span class="value">{{ data.Age }}</span>
+        <main class="main-content result-page">
+            {% if error %}
+            <div class="result-container error-state">
+                <div class="result-header">
+                    <div class="result-icon error">
+                        <span>⚠️</span>
                     </div>
-                    <div class="detail-item">
-                        <span class="label">Department</span>
-                        <span class="value">{{ data.Department }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Job Role</span>
-                        <span class="value">{{ data.JobRole }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Monthly Income</span>
-                        <span class="value">${{ data.MonthlyIncome }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Years at Company</span>
-                        <span class="value">{{ data.YearsAtCompany }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Job Satisfaction</span>
-                        <span class="value">{{ data.JobSatisfaction }}/4</span>
-                    </div>
+                    <h1>Prediction Error</h1>
+                    <p class="error-message">{{ error }}</p>
+                </div>
+                <div class="result-actions">
+                    <a href="/" class="btn btn-primary">
+                        <span>←</span> Try Again
+                    </a>
                 </div>
             </div>
+            {% else %}
+            <div class="result-container {{ 'high-risk' if result.prediction == 'LEAVE' else 'low-risk' }}">
+                <div class="result-header">
+                    <div class="result-icon {{ 'danger' if result.prediction == 'LEAVE' else 'success' }}">
+                        <span>{% if result.prediction == 'LEAVE' %}🚨{% else %}✓{% endif %}</span>
+                    </div>
+                    <div class="result-label">Attrition Risk Assessment</div>
+                    <h1 class="result-prediction">
+                        {% if result.prediction == 'LEAVE' %}
+                        High Risk - Likely to Leave
+                        {% else %}
+                        Low Risk - Likely to Stay
+                        {% endif %}
+                    </h1>
+                    <div class="result-confidence">
+                        Model Confidence: <strong>{{ result.confidence }}%</strong>
+                    </div>
+                </div>
 
-            {% if result.prediction == 'LEAVE' %}
-            <div class="recommendation">
-                <h4>Retention Recommendations</h4>
-                <ul>
-                    <li>Review compensation and benefits package</li>
-                    <li>Schedule a one-on-one meeting to discuss career growth</li>
-                    <li>Consider work-life balance improvements</li>
-                    <li>Evaluate training and development opportunities</li>
-                </ul>
+                <div class="probability-visualization">
+                    <div class="prob-header">
+                        <span>Probability Distribution</span>
+                    </div>
+                    <div class="prob-bar-container">
+                        <div class="prob-bar">
+                            <div class="prob-fill stay" style="width: {{ result.stay_prob }}%"></div>
+                            <div class="prob-fill leave" style="width: {{ result.leave_prob }}%"></div>
+                        </div>
+                        <div class="prob-labels">
+                            <div class="prob-label stay">
+                                <span class="prob-dot stay"></span>
+                                <span class="prob-text">Stay</span>
+                                <span class="prob-value">{{ result.stay_prob }}%</span>
+                            </div>
+                            <div class="prob-label leave">
+                                <span class="prob-dot leave"></span>
+                                <span class="prob-text">Leave</span>
+                                <span class="prob-value">{{ result.leave_prob }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-summary">
+                    <h3>Employee Profile</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-icon">👤</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Demographics</span>
+                                <span class="summary-value">{{ data.Age }} years, {{ data.Gender }}, {{ data.MaritalStatus }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">💼</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Position</span>
+                                <span class="summary-value">{{ data.JobRole }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">🏢</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Department</span>
+                                <span class="summary-value">{{ data.Department }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">💰</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Monthly Income</span>
+                                <span class="summary-value">${{ data.MonthlyIncome|int }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">📅</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Tenure</span>
+                                <span class="summary-value">{{ data.YearsAtCompany }} years at company</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">⭐</span>
+                            <div class="summary-content">
+                                <span class="summary-label">Job Satisfaction</span>
+                                <span class="summary-value">{{ data.JobSatisfaction }}/4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if result.prediction == 'LEAVE' %}
+                <div class="recommendations">
+                    <h3>🎯 Retention Recommendations</h3>
+                    <div class="recommendation-list">
+                        <div class="recommendation-item">
+                            <div class="rec-number">1</div>
+                            <div class="rec-content">
+                                <strong>Career Development</strong>
+                                <p>Schedule a career path discussion to understand growth aspirations and identify promotion opportunities.</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-number">2</div>
+                            <div class="rec-content">
+                                <strong>Compensation Review</strong>
+                                <p>Conduct a market salary comparison and consider adjustments or additional benefits.</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-number">3</div>
+                            <div class="rec-content">
+                                <strong>Work-Life Balance</strong>
+                                <p>Explore flexible work arrangements, reduce overtime requirements, or offer additional PTO.</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-number">4</div>
+                            <div class="rec-content">
+                                <strong>Engagement Initiative</strong>
+                                <p>Involve in meaningful projects, provide skill development opportunities, or assign a mentor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="retention-tips">
+                    <h3>💡 Maintain Engagement</h3>
+                    <p>While this employee shows low attrition risk, continue fostering engagement through regular check-ins, recognition programs, and growth opportunities.</p>
+                </div>
+                {% endif %}
+
+                <div class="result-actions">
+                    <a href="/" class="btn btn-primary">
+                        <span>+</span> New Prediction
+                    </a>
+                    <button onclick="window.print()" class="btn btn-secondary">
+                        <span>📄</span> Export Report
+                    </button>
+                </div>
             </div>
             {% endif %}
-
-            <div class="actions">
-                <a href="/" class="btn-primary">New Prediction</a>
-            </div>
-        </div>
-        {% endif %}
-    </main>
-
-    <footer class="footer">
-        <p>Employee Attrition Prediction System • Built with XGBoost</p>
-    </footer>
+        </main>
+    </div>
 </body>
 </html>
