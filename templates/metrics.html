@@ -3,92 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Model Performance</title>
+    <title>Model Analytics | AttritionAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-brand">HR Analytics</div>
-        <div class="nav-links">
-            <a href="/">Predict</a>
-            <a href="/metrics" class="active">Model Stats</a>
-        </div>
-    </nav>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">◈</span>
+                    <span class="logo-text">AttritionAI</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/">
+                        <span class="nav-icon">📊</span>
+                        <span>Predict</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="/metrics">
+                        <span class="nav-icon">📈</span>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-    <main class="main-content">
-        <div class="hero-section">
-            <h1>Model Performance</h1>
-            <p>XGBoost classifier trained on IBM HR Analytics dataset</p>
-        </div>
+        <main class="main-content analytics-page">
+            <header class="page-header">
+                <div class="header-content">
+                    <h1>Model Analytics</h1>
+                    <p>Performance metrics and evaluation of the Random Forest classifier trained on IBM HR Analytics data.</p>
+                </div>
+            </header>
 
-        <div class="metrics-container">
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-value">{{ "%.1f"|format(metrics.accuracy * 100) }}%</div>
-                    <div class="metric-label">Accuracy</div>
-                    <div class="metric-desc">Overall correct predictions</div>
+            <div class="analytics-grid">
+                <div class="metric-card-large">
+                    <div class="metric-header">
+                        <span class="metric-icon">🎯</span>
+                        <span class="metric-title">Accuracy</span>
+                    </div>
+                    <div class="metric-value-large">{{ "%.1f"|format(metrics.accuracy * 100) }}%</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" style="width: {{ metrics.accuracy * 100 }}%"></div>
+                    </div>
+                    <p class="metric-description">Percentage of correct predictions across all test samples</p>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value">{{ "%.1f"|format(metrics.precision * 100) }}%</div>
-                    <div class="metric-label">Precision</div>
-                    <div class="metric-desc">True positives / predicted positives</div>
+
+                <div class="metric-card-large">
+                    <div class="metric-header">
+                        <span class="metric-icon">📊</span>
+                        <span class="metric-title">ROC AUC</span>
+                    </div>
+                    <div class="metric-value-large">{{ "%.2f"|format(metrics.roc_auc) }}</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" style="width: {{ metrics.roc_auc * 100 }}%"></div>
+                    </div>
+                    <p class="metric-description">Area under the Receiver Operating Characteristic curve</p>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value">{{ "%.1f"|format(metrics.recall * 100) }}%</div>
-                    <div class="metric-label">Recall</div>
-                    <div class="metric-desc">True positives / actual positives</div>
+
+                <div class="metric-card-small">
+                    <div class="metric-header">
+                        <span class="metric-icon">✓</span>
+                        <span class="metric-title">Precision</span>
+                    </div>
+                    <div class="metric-value-small">{{ "%.1f"|format(metrics.precision * 100) }}%</div>
+                    <p class="metric-description">True positives / Predicted positives</p>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value">{{ "%.2f"|format(metrics.f1_score) }}</div>
-                    <div class="metric-label">F1 Score</div>
-                    <div class="metric-desc">Harmonic mean of precision and recall</div>
+
+                <div class="metric-card-small">
+                    <div class="metric-header">
+                        <span class="metric-icon">🔍</span>
+                        <span class="metric-title">Recall</span>
+                    </div>
+                    <div class="metric-value-small">{{ "%.1f"|format(metrics.recall * 100) }}%</div>
+                    <p class="metric-description">True positives / Actual positives</p>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value">{{ "%.2f"|format(metrics.roc_auc) }}</div>
-                    <div class="metric-label">ROC AUC</div>
-                    <div class="metric-desc">Area under the ROC curve</div>
+
+                <div class="metric-card-small">
+                    <div class="metric-header">
+                        <span class="metric-icon">⚖️</span>
+                        <span class="metric-title">F1 Score</span>
+                    </div>
+                    <div class="metric-value-small">{{ "%.2f"|format(metrics.f1_score) }}</div>
+                    <p class="metric-description">Harmonic mean of precision and recall</p>
                 </div>
             </div>
 
-            <div class="confusion-section">
-                <h2>Confusion Matrix</h2>
-                <img src="{{ url_for('static', filename='confusion.png') }}" alt="Confusion Matrix" class="confusion-img">
-            </div>
-
-            <div class="model-details">
-                <h2>Model Details</h2>
-                <div class="details-list">
-                    <div class="detail-row">
-                        <span class="detail-key">Algorithm</span>
-                        <span class="detail-value">XGBoost Classifier</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-key">Data Balancing</span>
-                        <span class="detail-value">SMOTE (Synthetic Minority Over-sampling)</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-key">Feature Scaling</span>
-                        <span class="detail-value">StandardScaler for numerical features</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-key">Encoding</span>
-                        <span class="detail-value">OneHotEncoder for categorical features</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-key">Dataset</span>
-                        <span class="detail-value">IBM HR Analytics Employee Attrition</span>
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2>Confusion Matrix</h2>
+                    <p>Visualization of true vs predicted classifications</p>
+                </div>
+                <div class="confusion-matrix-container">
+                    <img src="{{ url_for('static', filename='confusion.png') }}" alt="Confusion Matrix" class="confusion-matrix-img">
+                    <div class="matrix-legend">
+                        <div class="legend-item">
+                            <span class="legend-color tn"></span>
+                            <span>True Negative (Correctly predicted Stay)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color tp"></span>
+                            <span>True Positive (Correctly predicted Leave)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color fn"></span>
+                            <span>False Negative (Missed attrition)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color fp"></span>
+                            <span>False Positive (False alarm)</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="back-link">
-            <a href="/" class="btn-primary">Back to Prediction</a>
-        </div>
-    </main>
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2>Model Architecture</h2>
+                    <p>Technical details of the machine learning pipeline</p>
+                </div>
+                <div class="architecture-grid">
+                    <div class="arch-card">
+                        <div class="arch-icon">🌲</div>
+                        <h3>Random Forest</h3>
+                        <p>Ensemble of 300 decision trees with max depth of 15</p>
+                        <ul class="arch-details">
+                            <li>n_estimators: 300</li>
+                            <li>max_depth: 15</li>
+                            <li>min_samples_split: 5</li>
+                            <li>class_weight: balanced</li>
+                        </ul>
+                    </div>
+                    <div class="arch-card">
+                        <div class="arch-icon">⚙️</div>
+                        <h3>Preprocessing</h3>
+                        <p>Feature transformation pipeline</p>
+                        <ul class="arch-details">
+                            <li>StandardScaler for 23 numerical features</li>
+                            <li>OneHotEncoder for 7 categorical features</li>
+                            <li>Handle unknown categories gracefully</li>
+                        </ul>
+                    </div>
+                    <div class="arch-card">
+                        <div class="arch-icon">📁</div>
+                        <h3>Dataset</h3>
+                        <p>IBM HR Analytics Employee Attrition</p>
+                        <ul class="arch-details">
+                            <li>1,470 employee records</li>
+                            <li>30 features used</li>
+                            <li>16% attrition rate</li>
+                            <li>80/20 train-test split</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-    <footer class="footer">
-        <p>Employee Attrition Prediction System • Built with XGBoost</p>
-    </footer>
+            <div class="back-action">
+                <a href="/" class="btn btn-primary">
+                    <span>←</span> Back to Prediction
+                </a>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
