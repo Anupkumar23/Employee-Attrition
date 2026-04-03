@@ -1,6 +1,6 @@
 # Employee Attrition Prediction
 
-A machine learning web application that predicts employee attrition risk using XGBoost classifier. Built with Flask and trained on the IBM HR Analytics dataset.
+A machine learning web application that predicts employee attrition risk using Random Forest classifier. Built with Flask and trained on the IBM HR Analytics dataset.
 
 ## Features
 
@@ -36,17 +36,21 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Train the Model (First Time Only)
+### 4. Train the Model
+
+Open `Employee_Attrition.ipynb` in Jupyter Notebook and run all cells. The notebook includes:
+- Data exploration and visualization
+- Model training and evaluation
+- **Section 8**: Exports `model.pkl` and `metrics.pkl` for the Flask app
 
 ```bash
-python train_model.py
+jupyter notebook Employee_Attrition.ipynb
 ```
 
-This will:
-- Load and preprocess the dataset
-- Train the XGBoost model with SMOTE balancing
-- Save `model.pkl` and `metrics.pkl`
-- Generate confusion matrix image
+Or run via command line:
+```bash
+jupyter nbconvert --to notebook --execute Employee_Attrition.ipynb
+```
 
 ### 5. Run the Application
 
@@ -63,9 +67,9 @@ Navigate to: **http://127.0.0.1:5000**
 ```
 Employee-Attrition/
 ├── app.py                 # Flask web application
-├── train_model.py         # Model training script
-├── model.pkl              # Trained XGBoost model
-├── metrics.pkl            # Model performance metrics
+├── Employee_Attrition.ipynb  # Model training & analysis notebook
+├── model.pkl              # Trained model (generated from notebook)
+├── metrics.pkl            # Model metrics (generated from notebook)
 ├── requirements.txt       # Python dependencies
 ├── WA_Fn-UseC_-HR-Employee-Attrition.csv  # Dataset
 ├── static/
@@ -130,22 +134,10 @@ Response:
 }
 ```
 
-## Model Performance
-
-| Metric    | Score  |
-|-----------|--------|
-| Accuracy  | ~87%   |
-| Precision | ~65%   |
-| Recall    | ~70%   |
-| F1 Score  | ~0.67  |
-| ROC AUC   | ~0.80  |
-
-*Actual values may vary based on training run*
-
 ## Technologies
 
 - **Backend**: Flask, Python
-- **ML**: XGBoost, scikit-learn, imbalanced-learn
+- **ML**: Random Forest, scikit-learn
 - **Data**: pandas, NumPy
 - **Visualization**: matplotlib, seaborn
 
