@@ -5,34 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction Result | AttritionAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <span class="logo-icon">◈</span>
                     <span class="logo-text">AttritionAI</span>
                 </div>
+                <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                    <span>‹</span>
+                </button>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="/">
                         <span class="nav-icon">📊</span>
-                        <span>Predict</span>
+                        <span class="nav-text">Predict</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="/metrics">
                         <span class="nav-icon">📈</span>
-                        <span>Analytics</span>
+                        <span class="nav-text">Analytics</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <main class="main-content result-page">
+        <main class="main-content result-page" id="mainContent">
             {% if error %}
             <div class="result-container error-state">
                 <div class="result-header">
@@ -192,5 +195,14 @@
             {% endif %}
         </main>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+    </script>
 </body>
 </html>

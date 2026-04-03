@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AttritionAI | Employee Retention Predictor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <span class="logo-icon">◈</span>
                     <span class="logo-text">AttritionAI</span>
                 </div>
+                <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                    <span>‹</span>
+                </button>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item active">
                     <a href="/">
                         <span class="nav-icon">📊</span>
-                        <span>Predict</span>
+                        <span class="nav-text">Predict</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="/metrics">
                         <span class="nav-icon">📈</span>
-                        <span>Analytics</span>
+                        <span class="nav-text">Analytics</span>
                     </a>
                 </li>
             </ul>
@@ -44,7 +47,7 @@
             {% endif %}
         </nav>
 
-        <main class="main-content">
+        <main class="main-content" id="mainContent">
             <header class="page-header">
                 <div class="header-content">
                     <h1>Employee Attrition Prediction</h1>
@@ -55,6 +58,74 @@
                     <span class="badge accent">30 Features</span>
                 </div>
             </header>
+
+            <!-- Employee Templates Section - Collapsible Dropdown -->
+            <div class="templates-section">
+                <div class="templates-dropdown">
+                    <div class="templates-header" id="templatesHeader" onclick="toggleTemplates()">
+                        <div class="templates-header-left">
+                            <div class="templates-icon">⚡</div>
+                            <div class="templates-title-group">
+                                <h3>Quick Fill Templates <span class="quick-badge">NEW</span></h3>
+                                <p>Click to auto-fill with sample employee data</p>
+                            </div>
+                        </div>
+                        <div class="templates-toggle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="templates-content" id="templatesContent">
+                        <div class="templates-grid">
+                            <div class="template-card" onclick="fillTemplate(0); event.stopPropagation();">
+                                <div class="template-avatar" style="background: linear-gradient(135deg, #f472b6, #ec4899);">OBP</div>
+                                <div class="template-info">
+                                    <span class="template-name">Omm Biswajit Pradhan</span>
+                                    <span class="template-role">Sales Executive</span>
+                                    <span class="template-tag high-risk">High Risk</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="fillTemplate(1); event.stopPropagation();">
+                                <div class="template-avatar" style="background: linear-gradient(135deg, #34d399, #10b981);">BJD</div>
+                                <div class="template-info">
+                                    <span class="template-name">Bismaya Jyoti Dalei</span>
+                                    <span class="template-role">Research Scientist</span>
+                                    <span class="template-tag low-risk">Low Risk</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="fillTemplate(2); event.stopPropagation();">
+                                <div class="template-avatar" style="background: linear-gradient(135deg, #60a5fa, #3b82f6);">AKD</div>
+                                <div class="template-info">
+                                    <span class="template-name">Anup Kumar Das</span>
+                                    <span class="template-role">Lab Technician</span>
+                                    <span class="template-tag medium-risk">Medium Risk</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="fillTemplate(3); event.stopPropagation();">
+                                <div class="template-avatar" style="background: linear-gradient(135deg, #a78bfa, #8b5cf6);">MN</div>
+                                <div class="template-info">
+                                    <span class="template-name">Madhusmita Nayak</span>
+                                    <span class="template-role">Manager</span>
+                                    <span class="template-tag low-risk">Low Risk</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="fillTemplate(4); event.stopPropagation();">
+                                <div class="template-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">CS</div>
+                                <div class="template-info">
+                                    <span class="template-name">CR Sahoo</span>
+                                    <span class="template-role">HR Specialist</span>
+                                    <span class="template-tag high-risk">High Risk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">
+                <span>Or fill manually</span>
+            </div>
 
             <form action="/predict" method="post" class="prediction-form" id="predictionForm">
                 <!-- Personal Information -->
@@ -404,13 +475,173 @@
     </div>
 
     <script>
-        // Add smooth scroll and form interactions
+        // Employee Templates Data
+        const employeeTemplates = [
+            {
+                // Omm Biswajit Pradhan - High Risk Sales Executive
+                Age: 28, Gender: 'Male', MaritalStatus: 'Single', Education: 2, EducationField: 'Marketing',
+                DistanceFromHome: 24, Department: 'Sales', JobRole: 'Sales Executive', JobLevel: 1,
+                BusinessTravel: 'Travel_Frequently', OverTime: 'Yes', MonthlyIncome: 2500, DailyRate: 400,
+                HourlyRate: 45, MonthlyRate: 8000, PercentSalaryHike: 11, StockOptionLevel: 0,
+                TotalWorkingYears: 3, YearsAtCompany: 1, YearsInCurrentRole: 0, YearsWithCurrManager: 0,
+                YearsSinceLastPromotion: 0, NumCompaniesWorked: 3, TrainingTimesLastYear: 1,
+                JobSatisfaction: 1, EnvironmentSatisfaction: 1, RelationshipSatisfaction: 2,
+                WorkLifeBalance: 1, JobInvolvement: 2, PerformanceRating: 3
+            },
+            {
+                // Bismaya Jyoti Dalei - Low Risk Research Scientist
+                Age: 29, Gender: 'Male', MaritalStatus: 'Single', Education: 4, EducationField: 'Life Sciences',
+                DistanceFromHome: 5, Department: 'Research & Development', JobRole: 'Research Scientist', JobLevel: 3,
+                BusinessTravel: 'Travel_Rarely', OverTime: 'No', MonthlyIncome: 8500, DailyRate: 1100,
+                HourlyRate: 75, MonthlyRate: 18000, PercentSalaryHike: 18, StockOptionLevel: 2,
+                TotalWorkingYears: 12, YearsAtCompany: 8, YearsInCurrentRole: 5, YearsWithCurrManager: 4,
+                YearsSinceLastPromotion: 2, NumCompaniesWorked: 2, TrainingTimesLastYear: 3,
+                JobSatisfaction: 4, EnvironmentSatisfaction: 4, RelationshipSatisfaction: 4,
+                WorkLifeBalance: 4, JobInvolvement: 4, PerformanceRating: 4
+            },
+            {
+                // Anup Kumar Das - Medium Risk Lab Technician
+                Age: 32, Gender: 'Male', MaritalStatus: 'Married', Education: 3, EducationField: 'Technical Degree',
+                DistanceFromHome: 12, Department: 'Research & Development', JobRole: 'Laboratory Technician', JobLevel: 2,
+                BusinessTravel: 'Travel_Rarely', OverTime: 'Yes', MonthlyIncome: 4200, DailyRate: 650,
+                HourlyRate: 55, MonthlyRate: 12000, PercentSalaryHike: 13, StockOptionLevel: 1,
+                TotalWorkingYears: 8, YearsAtCompany: 4, YearsInCurrentRole: 2, YearsWithCurrManager: 2,
+                YearsSinceLastPromotion: 3, NumCompaniesWorked: 4, TrainingTimesLastYear: 2,
+                JobSatisfaction: 2, EnvironmentSatisfaction: 3, RelationshipSatisfaction: 3,
+                WorkLifeBalance: 2, JobInvolvement: 3, PerformanceRating: 3
+            },
+            {
+                // Madhusmita Nayak - Low Risk Manager
+                Age: 45, Gender: 'Female', MaritalStatus: 'Divorced', Education: 5, EducationField: 'Life Sciences',
+                DistanceFromHome: 3, Department: 'Research & Development', JobRole: 'Manager', JobLevel: 4,
+                BusinessTravel: 'Non-Travel', OverTime: 'No', MonthlyIncome: 15000, DailyRate: 1400,
+                HourlyRate: 95, MonthlyRate: 25000, PercentSalaryHike: 20, StockOptionLevel: 3,
+                TotalWorkingYears: 22, YearsAtCompany: 15, YearsInCurrentRole: 8, YearsWithCurrManager: 6,
+                YearsSinceLastPromotion: 1, NumCompaniesWorked: 2, TrainingTimesLastYear: 4,
+                JobSatisfaction: 4, EnvironmentSatisfaction: 4, RelationshipSatisfaction: 4,
+                WorkLifeBalance: 3, JobInvolvement: 4, PerformanceRating: 4
+            },
+            {
+                // CR Sahoo - High Risk HR Specialist
+                Age: 58, Gender: 'Male', MaritalStatus: 'Married', Education: 3, EducationField: 'Human Resources',
+                DistanceFromHome: 20, Department: 'Human Resources', JobRole: 'Human Resources', JobLevel: 1,
+                BusinessTravel: 'Travel_Frequently', OverTime: 'Yes', MonthlyIncome: 2800, DailyRate: 350,
+                HourlyRate: 40, MonthlyRate: 7500, PercentSalaryHike: 11, StockOptionLevel: 0,
+                TotalWorkingYears: 2, YearsAtCompany: 1, YearsInCurrentRole: 1, YearsWithCurrManager: 0,
+                YearsSinceLastPromotion: 1, NumCompaniesWorked: 2, TrainingTimesLastYear: 1,
+                JobSatisfaction: 1, EnvironmentSatisfaction: 2, RelationshipSatisfaction: 2,
+                WorkLifeBalance: 1, JobInvolvement: 2, PerformanceRating: 3
+            }
+        ];
+
+        // Templates Dropdown Toggle
+        function toggleTemplates() {
+            const header = document.getElementById('templatesHeader');
+            const content = document.getElementById('templatesContent');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('open');
+        }
+
+        function fillTemplate(index) {
+            const data = employeeTemplates[index];
+            
+            // Fill all input fields with smooth visual feedback
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'radio') {
+                        const radio = document.querySelector(`input[name="${key}"][value="${data[key]}"]`);
+                        if (radio) radio.checked = true;
+                    } else {
+                        element.value = data[key];
+                        // Add highlight effect
+                        element.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+                        element.style.boxShadow = '0 0 15px var(--accent-cyan-glow)';
+                        element.style.borderColor = 'var(--accent-cyan)';
+                        setTimeout(() => {
+                            element.style.boxShadow = '';
+                            element.style.borderColor = '';
+                        }, 800);
+                    }
+                }
+            });
+
+            // Handle radio buttons for satisfaction metrics
+            ['JobSatisfaction', 'EnvironmentSatisfaction', 'RelationshipSatisfaction', 
+             'WorkLifeBalance', 'JobInvolvement', 'PerformanceRating'].forEach(field => {
+                const radio = document.querySelector(`input[name="${field}"][value="${data[field]}"]`);
+                if (radio) radio.checked = true;
+            });
+
+            // Handle overtime toggle
+            if (data.OverTime === 'Yes') {
+                document.getElementById('overtime_yes').checked = true;
+            } else {
+                document.getElementById('overtime_no').checked = true;
+            }
+
+            // Scroll to form with smooth animation
+            setTimeout(() => {
+                document.querySelector('.prediction-form').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 200);
+
+            // Add visual feedback to selected card
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.template-card')[index].classList.add('selected');
+
+            // Show toast notification
+            showToast(`Loaded: ${['Omm Biswajit Pradhan', 'Bismaya Jyoti Dalei', 'Anup Kumar Das', 'Madhusmita Nayak', 'CR Sahoo'][index]}`);
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span class="toast-icon">✓</span> ${message}`;
+            document.body.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        // Form interactions with enhanced focus effects
         document.querySelectorAll('.form-group input, .form-group select').forEach(input => {
             input.addEventListener('focus', function() {
                 this.closest('.form-group').classList.add('focused');
             });
             input.addEventListener('blur', function() {
                 this.closest('.form-group').classList.remove('focused');
+            });
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         });
     </script>
