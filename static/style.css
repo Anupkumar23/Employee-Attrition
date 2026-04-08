@@ -183,7 +183,12 @@ body {
 .sidebar.collapsed .sidebar-stats {
     opacity: 0;
     visibility: hidden;
+    position: absolute;
     transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.sidebar.collapsed .logo-icon {
+    display: none;
 }
 
 .sidebar.collapsed .sidebar-toggle span {
@@ -196,6 +201,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 1.25rem 0;
 }
 
 .logo {
